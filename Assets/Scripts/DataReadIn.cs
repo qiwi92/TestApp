@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO.Ports;
 using System.Linq;
 using System.Threading;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class DataReadIn
 {
@@ -57,7 +59,17 @@ public class DataReadIn
                 indata = indata.Trim('?');
 
                 var dataSplited = indata.Split(',');
-                var numberData = Array.ConvertAll(dataSplited, float.Parse);
+
+                var numberData = new float[65];
+
+                var culture = (CultureInfo)CultureInfo.CurrentCulture.Clone();
+                culture.NumberFormat.NumberDecimalSeparator = ".";
+
+                for (var i = 0; i < dataSplited.Length; i++)
+                {
+                    var newFloat = float.Parse(dataSplited[i], culture);
+                    numberData[i] = newFloat;
+                }
 
                 DataReceived?.Invoke(numberData);
             }
